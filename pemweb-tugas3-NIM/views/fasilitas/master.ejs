@@ -1,0 +1,43 @@
+<%- include('../partials/header', { judul: 'Jenis Fasilitas (Data Master)', aktif: 'fasilitas' }) %>
+
+<p class="catatan">Daftar jenis fasilitas yang bisa dipilih pada form Tambah/Edit Kamar. Kondisi fasilitas diatur per kamar, bukan di sini.</p>
+
+<div class="toolbar">
+  <form method="GET" action="/fasilitas/master" class="cari">
+    <input type="search" name="cari" placeholder="Cari jenis fasilitas" value="<%= cari %>">
+    <button type="submit" class="btn">Cari</button>
+  </form>
+  <span class="toolbar-aksi">
+    <a class="btn" href="/fasilitas">&larr; Fasilitas per Kamar</a>
+    <a class="btn btn-primary" href="/fasilitas/master/tambah">+ Tambah Jenis Fasilitas</a>
+  </span>
+</div>
+
+<div class="tabel-wrap">
+  <table>
+    <thead>
+      <tr><th>No</th><th>Jenis Fasilitas</th><th>Dipakai di</th><th>Aksi</th></tr>
+    </thead>
+    <tbody>
+      <% if (data.length === 0) { %>
+        <tr><td colspan="4" class="kosong">Tidak ada data.</td></tr>
+      <% } %>
+      <% data.forEach((r, i) => { %>
+      <tr>
+        <td><%= offset + i + 1 %></td>
+        <td><%= r.nama_fasilitas %></td>
+        <td><%= r.jumlah_kamar %> kamar</td>
+        <td class="aksi">
+          <a class="btn btn-small" href="/fasilitas/master/<%= r.id_fasilitas %>/edit">Edit</a>
+          <form method="POST" action="/fasilitas/master/<%= r.id_fasilitas %>/hapus" onsubmit="return confirm('Yakin hapus jenis fasilitas ini?')">
+            <button type="submit" class="btn btn-small btn-danger">Hapus</button>
+          </form>
+        </td>
+      </tr>
+      <% }) %>
+    </tbody>
+  </table>
+</div>
+
+<%- include('../partials/paginasi', { baseUrl: '/fasilitas/master' }) %>
+<%- include('../partials/footer') %>
