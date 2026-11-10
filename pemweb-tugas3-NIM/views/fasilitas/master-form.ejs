@@ -1,0 +1,14 @@
+<%- include('../partials/header', { judul: item ? 'Edit Jenis Fasilitas' : 'Tambah Jenis Fasilitas', aktif: 'fasilitas' }) %>
+
+<form method="POST" action="<%= action %>" class="form">
+  <label>Nama Fasilitas
+    <input type="text" name="nama_fasilitas" required maxlength="50" placeholder="Contoh: Meja Belajar" value="<%= item ? item.nama_fasilitas : '' %>">
+  </label>
+  <% if (item) { %><p class="catatan">Mengganti nama berlaku untuk semua kamar yang memakai fasilitas ini.</p><% } %>
+  <div class="form-aksi">
+    <button type="submit" class="btn btn-primary">Simpan</button>
+    <a class="btn" href="/fasilitas/master">Batal</a>
+  </div>
+</form>
+
+<%- include('../partials/footer') %>
