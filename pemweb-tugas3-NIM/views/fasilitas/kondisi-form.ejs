@@ -1,0 +1,27 @@
+<%- include('../partials/header', { judul: 'Update Kondisi Fasilitas', aktif: 'fasilitas' }) %>
+
+<form method="POST" action="<%= action %>" class="form">
+  <div class="info-baris"><span>Kamar</span><span class="plat"><%= item.nomor_kamar %></span></div>
+  <div class="info-baris"><span>Fasilitas</span><strong><%= item.nama_fasilitas %></strong></div>
+  <p class="catatan">Perubahan hanya berlaku untuk fasilitas ini di kamar <%= item.nomor_kamar %>, tidak memengaruhi kamar lain.</p>
+
+  <div class="kondisi-grup form-grup">
+    <label>Kondisi
+      <select name="kondisi" required data-kondisi>
+        <option value="baik" <%= item.kondisi === 'baik' ? 'selected' : '' %>>Baik</option>
+        <option value="rusak" <%= item.kondisi === 'rusak' ? 'selected' : '' %>>Rusak</option>
+      </select>
+    </label>
+    <label class="ket-field" <%= item.kondisi === 'rusak' ? '' : 'hidden' %>>Keterangan Kerusakan
+      <input type="text" name="keterangan" maxlength="100" placeholder="Contoh: tidak dapat dinyalakan" value="<%= item.keterangan || '' %>" <%= item.kondisi === 'rusak' ? 'required' : '' %>>
+    </label>
+  </div>
+
+  <div class="form-aksi">
+    <button type="submit" class="btn btn-primary">Simpan</button>
+    <a class="btn" href="/fasilitas">Batal</a>
+  </div>
+</form>
+
+<script src="/fasilitas-form.js"></script>
+<%- include('../partials/footer') %>

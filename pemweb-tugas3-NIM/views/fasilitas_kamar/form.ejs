@@ -1,0 +1,59 @@
+<%- include('../partials/header', { judul: 'Tambah Fasilitas ke Kamar' , aktif: 'fasilitas' }) %>
+
+    <% if (daftarKamar.length===0 || daftarFasilitas.length===0) { %>
+        <div class="form">
+            <p class="catatan">
+                <% if (daftarKamar.length===0) { %>Belum ada kamar. <a href="/kamar/tambah">Tambahkan kamar</a> terlebih
+                    dahulu.<% } %>
+                        <% if (daftarFasilitas.length===0) { %>Belum ada jenis fasilitas. <a
+                                href="/fasilitas/master/tambah">Tambahkan jenis fasilitas</a> terlebih dahulu.<% } %>
+            </p>
+            <div class="form-aksi"><a class="btn" href="/fasilitas">Kembali</a></div>
+        </div>
+        <% } else { %>
+            <form method="POST" action="<%= action %>" class="form">
+                <label>Kamar
+                    <select name="id_kamar" required>
+                        <option value="">-- pilih kamar --</option>
+                        <% daftarKamar.forEach(k=> { %>
+                            <option value="<%= k.id_kamar %>">
+                                <%= k.nomor_kamar %>
+                            </option>
+                            <% }) %>
+                    </select>
+                </label>
+                <label>Fasilitas
+                    <select name="id_fasilitas" required>
+                        <option value="">-- pilih fasilitas --</option>
+                        <% daftarFasilitas.forEach(f=> { %>
+                            <option value="<%= f.id_fasilitas %>">
+                                <%= f.nama_fasilitas %>
+                            </option>
+                            <% }) %>
+                    </select>
+                </label>
+
+                <div class="kondisi-grup form-grup">
+                    <label>Kondisi
+                        <select name="kondisi" required data-kondisi>
+                            <option value="baik" selected>Baik</option>
+                            <option value="rusak">Rusak</option>
+                        </select>
+                    </label>
+                    <label class="ket-field" hidden>Keterangan Kerusakan
+                        <input type="text" name="keterangan" maxlength="100"
+                            placeholder="Contoh: tidak dapat dinyalakan">
+                    </label>
+                </div>
+                <p class="catatan">Satu kamar hanya boleh memiliki satu baris untuk tiap jenis fasilitas. Untuk mengubah
+                    kondisinya, pakai tombol Update Kondisi di halaman Fasilitas.</p>
+
+                <div class="form-aksi">
+                    <button type="submit" class="btn btn-primary">Simpan</button>
+                    <a class="btn" href="/fasilitas">Batal</a>
+                </div>
+            </form>
+            <% } %>
+
+                <script src="/fasilitas-form.js"></script>
+                <%- include('../partials/footer') %>
