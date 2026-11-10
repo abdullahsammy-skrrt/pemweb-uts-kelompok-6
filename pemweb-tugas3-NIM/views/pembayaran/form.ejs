@@ -1,0 +1,37 @@
+<%- include('../partials/header', { judul: item ? 'Edit Pembayaran' : 'Tambah Pembayaran' , aktif: 'pembayaran' }) %>
+
+    <form method="POST" action="<%= action %>" class="form">
+        <label>Penghuni
+            <select name="id_penghuni" required>
+                <option value="">-- pilih --</option>
+                <% daftarPenghuni.forEach(o=> { %>
+                    <option value="<%= o.id_penghuni %>" <%=item && String(item.id_penghuni)===String(o.id_penghuni)
+                        ? 'selected' : '' %>><%= o.nama + ' (' + o.nomor_kamar + ')' %>
+                    </option>
+                    <% }) %>
+            </select>
+        </label>
+        <label>Periode (bulan)
+            <input type="month" name="periode" required value="<%= item ? (item.periode ?? '') : '' %>">
+        </label>
+        <label>Jumlah (Rp)
+            <input type="number" name="jumlah" required min="0" value="<%= item ? (item.jumlah ?? '') : '' %>">
+        </label>
+        <label>Tanggal Bayar
+            <input type="date" name="tanggal_bayar" value="<%= item ? (item.tanggal_bayar ?? '') : '' %>">
+        </label>
+        <label>Status
+            <select name="status" required>
+                <% ['belum', 'lunas' ,'tertagih'].forEach(s=> { %>
+                    <option value="<%= s %>" <%=item && item.status===s ? 'selected' : '' %>><%= s %>
+                    </option>
+                    <% }) %>
+            </select>
+        </label>
+        <div class="form-aksi">
+            <button type="submit" class="btn btn-primary">Simpan</button>
+            <a class="btn" href="/pembayaran">Batal</a>
+        </div>
+    </form>
+
+    <%- include('../partials/footer') %>
