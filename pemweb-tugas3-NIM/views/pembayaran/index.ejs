@@ -1,0 +1,69 @@
+<%- include('../partials/header', { judul: 'Riwayat Pembayaran' , aktif: 'pembayaran' }) %>
+
+    <div class="toolbar">
+        <form method="GET" action="/pembayaran" class="cari">
+            <input type="search" name="cari" placeholder="Cari penghuni, kamar, atau periode (2026-10)"
+                value="<%= cari %>">
+            <button type="submit" class="btn">Cari</button>
+        </form>
+        <a class="btn btn-primary" href="/pembayaran/tambah">+ Tambah Pembayaran</a>
+    </div>
+
+    <div class="tabel-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>No</th>
+                    <th>Periode</th>
+                    <th>Penghuni</th>
+                    <th>Kamar</th>
+                    <th>Jumlah</th>
+                    <th>Tgl Bayar</th>
+                    <th>Status</th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% if (data.length===0) { %>
+                    <tr>
+                        <td colspan="8" class="kosong">Tidak ada data.</td>
+                    </tr>
+                    <% } %>
+                        <% data.forEach((r, i)=> { %>
+                            <tr>
+                                <td>
+                                    <%= offset + i + 1 %>
+                                </td>
+                                <td>
+                                    <%= r.periode %>
+                                </td>
+                                <td>
+                                    <%= r.nama %>
+                                </td>
+                                <td><span class="plat">
+                                        <%= r.nomor_kamar %>
+                                    </span></td>
+                                <td>
+                                    <%= rupiah(r.jumlah) %>
+                                </td>
+                                <td>
+                                    <%= r.tanggal_bayar || '-' %>
+                                </td>
+                                <td><span class="badge badge-<%= r.status %>">
+                                        <%= r.status %>
+                                    </span></td>
+                                <td class="aksi">
+                                    <a class="btn btn-small" href="/pembayaran/<%= r.id_pembayaran %>/edit">Edit</a>
+                                    <form method="POST" action="/pembayaran/<%= r.id_pembayaran %>/hapus"
+                                        onsubmit="return confirm('Yakin hapus data ini?')">
+                                        <button type="submit" class="btn btn-small btn-danger">Hapus</button>
+                                    </form>
+                                </td>
+                            </tr>
+                            <% }) %>
+            </tbody>
+        </table>
+    </div>
+
+    <%- include('../partials/paginasi', { baseUrl: '/pembayaran' }) %>
+        <%- include('../partials/footer') %>
