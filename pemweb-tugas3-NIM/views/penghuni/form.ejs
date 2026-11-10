@@ -1,0 +1,34 @@
+<%- include('../partials/header', { judul: item ? 'Edit Penghuni' : 'Tambah Penghuni', aktif: 'penghuni' }) %>
+
+<form method="POST" action="<%= action %>" class="form">
+  <label>Kamar
+    <select name="id_kamar" required>
+      <option value="">-- pilih --</option>
+      <% daftarKamar.forEach(o => { %>
+        <option value="<%= o.id_kamar %>" <%= item && String(item.id_kamar) === String(o.id_kamar) ? 'selected' : '' %>><%= o.nomor_kamar %></option>
+      <% }) %>
+    </select>
+  </label>
+  <label>Nama Lengkap
+    <input type="text" name="nama" required maxlength="100" value="<%= item ? (item.nama ?? '') : '' %>">
+  </label>
+  <label>No. HP
+    <input type="text" name="no_hp" maxlength="20" value="<%= item ? (item.no_hp ?? '') : '' %>">
+  </label>
+  <label>Tanggal Masuk
+    <input type="date" name="tanggal_masuk" required value="<%= item ? (item.tanggal_masuk ?? '') : '' %>">
+  </label>
+  <label>Status
+    <select name="status" required>
+      <% ['aktif', 'keluar'].forEach(s => { %>
+        <option value="<%= s %>" <%= item && item.status === s ? 'selected' : '' %>><%= s %></option>
+      <% }) %>
+    </select>
+  </label>
+  <div class="form-aksi">
+    <button type="submit" class="btn btn-primary">Simpan</button>
+    <a class="btn" href="/penghuni">Batal</a>
+  </div>
+</form>
+
+<%- include('../partials/footer') %>

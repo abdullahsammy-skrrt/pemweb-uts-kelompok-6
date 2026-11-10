@@ -1,0 +1,90 @@
+<%- include('../partials/header', { judul: 'Data Penghuni', aktif: 'penghuni' }) %>
+
+<div class="toolbar">
+  <form method="GET" action="/penghuni" class="cari">
+    <input type="search" name="cari" placeholder="Cari nama atau nomor kamar" value="<%= cari %>">
+    <button type="submit" class="btn">Cari</button>
+  </form>
+  <div class="toolbar-aksi">
+    <button type="submit" form="form-hapus-banyak" id="tombol-hapus-banyak" class="btn btn-danger" disabled>Hapus Terpilih</button>
+    <a class="btn btn-primary" href="/penghuni/tambah">+ Tambah Penghuni</a>
+  </div>
+</div>
+
+<%# Form kosong ini dirujuk oleh checkbox dan tombol lewat atribut form="..." (form tidak boleh bersarang) %>
+<form id="form-hapus-banyak" method="POST" action="/penghuni/hapus-banyak"></form>
+
+<style>
+  .toolbar-aksi { display: flex; gap: 10px; flex-wrap: wrap; }
+  .toolbar-aksi .btn:disabled { opacity: .45; cursor: not-allowed; }
+  th.kolom-pilih, td.kolom-pilih { width: 44px; padding-right: 0; }
+  input.pilih { width: 18px; height: 18px; padding: 0; margin: 0; cursor: pointer; accent-color: #f6727f; vertical-align: middle; }
+</style>
+
+<div class="tabel-wrap">
+  <table>
+    <thead>
+      <tr><th class="kolom-pilih"><input type="checkbox" id="pilih-semua" class="pilih" title="Pilih semua di halaman ini"></th><th>No</th><th>Nama</th><th>Kamar</th><th>No. HP</th><th>Tanggal Masuk</th><th>Status</th><th>Aksi</th></tr>
+    </thead>
+    <tbody>
+      <% if (data.length === 0) { %>
+        <tr><td colspan="8" class="kosong">Tidak ada data.</td></tr>
+      <% } %>
+      <% data.forEach((r, i) => { %>
+      <tr>
+        <td class="kolom-pilih"><input type="checkbox" name="ids" value="<%= r.id_penghuni %>" form="form-hapus-banyak" class="pilih"></td>
+        <td><%= offset + i + 1 %></td>
+        <td><%= r.nama %></td>
+        <td><span class="plat"><%= r.nomor_kamar %></span></td>
+        <td><%= r.no_hp || '-' %></td>
+        <td><%= r.tanggal_masuk %></td>
+        <td><span class="badge badge-<%= r.status %>"><%= r.status %></span></td>
+        <td class="aksi">
+          <a class="btn btn-small" href="/penghuni/<%= r.id_penghuni %>/edit">Edit</a>
+          <form method="POST" action="/penghuni/<%= r.id_penghuni %>/hapus" onsubmit="return confirm('Hapus penghuni ini?\n\nSeluruh riwayat pembayarannya juga akan ikut terhapus dan tidak bisa dikembalikan.\n\nJika ingin menyimpan riwayat, batalkan lalu ubah status menjadi keluar lewat tombol Edit.')">
+            <button type="submit" class="btn btn-small btn-danger">Hapus</button>
+          </form>
+        </td>
+      </tr>
+      <% }) %>
+    </tbody>
+  </table>
+</div>
+
+<script>
+(function () {
+  var form = document.getElementById('form-hapus-banyak');
+  var tombol = document.getElementById('tombol-hapus-banyak');
+  var semua = document.getElementById('pilih-semua');
+  var kotak = Array.prototype.slice.call(document.querySelectorAll('input[name="ids"]'));
+
+  function jumlahTerpilih() {
+    return kotak.filter(function (k) { return k.checked; }).length;
+  }
+
+  function perbarui() {
+    var n = jumlahTerpilih();
+    tombol.disabled = n === 0;
+    tombol.textContent = n > 0 ? 'Hapus Terpilih (' + n + ')' : 'Hapus Terpilih';
+    semua.checked = kotak.length > 0 && n === kotak.length;
+    semua.indeterminate = n > 0 && n < kotak.length;
+  }
+
+  semua.addEventListener('change', function () {
+    kotak.forEach(function (k) { k.checked = semua.checked; });
+    perbarui();
+  });
+  kotak.forEach(function (k) { k.addEventListener('change', perbarui); });
+
+  form.addEventListener('submit', function (e) {
+    var n = jumlahTerpilih();
+    var pesan = 'Hapus ' + n + ' penghuni terpilih?\n\nSeluruh riwayat pembayaran mereka juga akan ikut terhapus dan tidak bisa dikembalikan.\n\nJika ingin menyimpan riwayat, batalkan lalu ubah status menjadi keluar lewat tombol Edit.';
+    if (n === 0 || !confirm(pesan)) e.preventDefault();
+  });
+
+  perbarui();
+})();
+</script>
+
+<%- include('../partials/paginasi', { baseUrl: '/penghuni' }) %>
+<%- include('../partials/footer') %>
